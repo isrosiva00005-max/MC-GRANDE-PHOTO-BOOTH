@@ -167,11 +167,11 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 40%, transparent 100%)',
               textAlign: 'center'
             }}>
-              <h1 style={{ fontSize: '2.4rem', color: '#fdfbf7', margin: '0 0 5px 0', fontWeight: 'bold', letterSpacing: '1px', textShadow: '0 2px 6px rgba(0,0,0,0.8)' }}>
+              <h1 style={{ fontSize: '2.8rem', color: '#d4af37', margin: '0 0 5px 0', fontWeight: 'normal', fontStyle: 'italic', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                 {userData.name || 'Your Name'}
               </h1>
               <h2 style={{ fontSize: '1rem', color: '#d4af37', margin: '0 0 12px 0', fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                {userData.department || 'DEPARTMENT'} <span style={{ color: '#cbd5e1', margin: '0 5px' }}>|</span> <span style={{ color: '#cbd5e1' }}>CLASS OF {userData.year || 'YYYY'}</span>
+                {userData.department || 'DEPARTMENT'}
               </h2>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>

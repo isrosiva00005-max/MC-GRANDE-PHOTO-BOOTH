@@ -37,15 +37,21 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
 
       <div className="form-group">
         <label htmlFor="year">Batch Year (From - To)</label>
-        <input 
-          type="text" 
+        <select 
           id="year" 
           name="year" 
           className="form-control" 
-          placeholder="e.g. 2020 - 2024"
           value={userData.year}
           onChange={handleChange}
-        />
+          style={{ appearance: 'auto', paddingRight: '2rem' }}
+        >
+          <option value="" disabled>Select Batch Year</option>
+          <option value="2018 - 2022">2018 - 2022</option>
+          <option value="2019 - 2023">2019 - 2023</option>
+          <option value="2020 - 2024">2020 - 2024</option>
+          <option value="2021 - 2025">2021 - 2025</option>
+          <option value="2022 - 2026">2022 - 2026</option>
+        </select>
       </div>
 
       <div className="form-group">
