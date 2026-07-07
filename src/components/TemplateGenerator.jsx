@@ -97,7 +97,7 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
         }}
       >
         {photoUrl ? (
-          <div style={{ position: 'relative', width: '100%', height: '100%', fontFamily: "'Montserrat', 'Inter', sans-serif" }}>
+          <div style={{ position: 'relative', width: '100%', height: '100%', fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}>
             
             {/* User Photo (Full Canvas) */}
             <div style={{
@@ -111,7 +111,9 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
                 style={{
                   width: '100%',
                   height: 'auto',
-                  display: 'block'
+                  display: 'block',
+                  transform: `scale(${userData.photoScale || 1}) translate(${userData.photoX || 0}%, ${userData.photoY || 0}%)`,
+                  transformOrigin: 'center center'
                 }}
               />
             </div>
@@ -162,22 +164,22 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               alignItems: 'center',
               padding: '40px 20px 30px',
               zIndex: 2,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 40%, transparent 100%)',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 40%, transparent 100%)',
               textAlign: 'center'
             }}>
-              <h1 style={{ fontSize: '2.2rem', color: '#ffffff', margin: '0 0 5px 0', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '2px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                {userData.name || 'YOUR NAME'}
+              <h1 style={{ fontSize: '2.4rem', color: '#fdfbf7', margin: '0 0 5px 0', fontWeight: 'bold', letterSpacing: '1px', textShadow: '0 2px 6px rgba(0,0,0,0.8)' }}>
+                {userData.name || 'Your Name'}
               </h1>
-              <h2 style={{ fontSize: '1rem', color: '#38bdf8', margin: '0 0 12px 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                {userData.department || 'DEPARTMENT'} <span style={{ color: '#94a3b8', margin: '0 5px' }}>|</span> <span style={{ color: '#e2e8f0' }}>BATCH {userData.batch || 'XXXX'}</span>
+              <h2 style={{ fontSize: '1rem', color: '#d4af37', margin: '0 0 12px 0', fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                {userData.department || 'DEPARTMENT'} <span style={{ color: '#cbd5e1', margin: '0 5px' }}>|</span> <span style={{ color: '#cbd5e1' }}>CLASS OF {userData.year || 'YYYY'}</span>
               </h2>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: '700', color: '#fcd34d', fontStyle: 'italic', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                <span style={{ fontSize: '1.2rem', fontWeight: 'normal', color: '#fdfbf7', fontStyle: 'italic', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
                   "We are here!"
                 </span>
                 {userData.eta && (
-                  <span style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '4px 12px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: '700', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)' }}>
+                  <span style={{ background: 'rgba(0,0,0,0.5)', color: '#d4af37', padding: '4px 12px', borderRadius: '4px', fontSize: '0.85rem', border: '1px solid #d4af37', backdropFilter: 'blur(4px)' }}>
                     ETA: {userData.eta}
                   </span>
                 )}
@@ -189,12 +191,12 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
                 textAlign: 'center',
                 color: '#94a3b8',
                 fontSize: '0.75rem',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
+                borderTop: '1px solid rgba(212,175,55,0.3)',
                 paddingTop: '10px',
                 marginTop: '5px'
               }}>
-                <strong style={{ color: '#e2e8f0' }}>Mepco Schlenk Engineering College</strong><br/>
-                <span style={{ color: '#38bdf8' }}>www.mepcoeng.ac.in</span>
+                <strong style={{ color: '#e2e8f0', fontWeight: 'normal' }}>Mepco Schlenk Engineering College</strong><br/>
+                <span style={{ color: '#d4af37', fontStyle: 'italic' }}>www.mepcoeng.ac.in</span>
               </div>
             </div>
             

@@ -6,9 +6,11 @@ function App() {
   const [userData, setUserData] = useState({
     name: '',
     year: '',
-    batch: '',
     department: '',
     eta: '',
+    photoScale: 1,
+    photoX: 0,
+    photoY: 0,
     template: 'template-mca.jpg',
     frameTop: 27,
     frameLeft: 33.5,
