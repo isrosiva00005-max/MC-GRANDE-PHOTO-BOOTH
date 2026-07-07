@@ -46,11 +46,11 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
           style={{ appearance: 'auto', paddingRight: '2rem' }}
         >
           <option value="" disabled>Select Batch Year</option>
-          <option value="2018 - 2022">2018 - 2022</option>
-          <option value="2019 - 2023">2019 - 2023</option>
-          <option value="2020 - 2024">2020 - 2024</option>
-          <option value="2021 - 2025">2021 - 2025</option>
-          <option value="2022 - 2026">2022 - 2026</option>
+          {Array.from({ length: 2027 - 1970 }, (_, i) => 2026 - i).map(year => (
+            <option key={year} value={`${year} - ${year + 4}`}>
+              {year} - {year + 4}
+            </option>
+          ))}
         </select>
       </div>
 
