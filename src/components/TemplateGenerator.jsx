@@ -172,7 +172,17 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 40%, transparent 100%)',
               textAlign: 'center'
             }}>
-              <div style={{ fontSize: '2.8rem', color: '#d4af37', margin: '0 0 2px 0', fontWeight: 'normal', fontStyle: 'italic', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
+              <div style={{ 
+                fontSize: (userData.name || 'Your Name').length > 10 
+                  ? `${Math.max(1.6, 2.8 - ((userData.name || 'Your Name').length - 10) * 0.15)}rem` 
+                  : '2.8rem', 
+                color: '#d4af37', 
+                margin: '0 0 2px 0', 
+                fontWeight: 'normal', 
+                fontStyle: 'italic', 
+                letterSpacing: '1px', 
+                textShadow: '0 2px 4px rgba(0,0,0,0.9)' 
+              }}>
                 {userData.name || 'Your Name'}
               </div>
               
