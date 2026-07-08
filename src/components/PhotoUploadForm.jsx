@@ -90,16 +90,24 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
 
       <div className="form-group" style={{ marginTop: '2rem' }}>
         <label>Upload Photo</label>
-        <div className="file-upload-wrapper" onClick={() => fileInputRef.current.click()}>
+        <div className="file-upload-wrapper" style={{ position: 'relative' }}>
           <UploadCloud className="upload-icon" size={48} />
           <p style={{ color: 'var(--text-muted)' }}>Click to browse or drag & drop</p>
           <input 
             type="file" 
             className="file-upload-input" 
-            ref={fileInputRef}
             onChange={handleFileChange}
             accept="image/*"
-            style={{ display: 'none' }}
+            style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              opacity: 0, 
+              cursor: 'pointer',
+              zIndex: 10
+            }}
           />
         </div>
       </div>

@@ -51,51 +51,45 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleShare = async () => {
     if (!canvasRef.current || !photoUrl) return;
 
-    if (!WEBHOOK_URL) {
-      alert("Please configure your Google Apps Script Webhook URL in TemplateGenerator.jsx first!");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+    setIsGenerating(true);
     try {
       const canvas = await html2canvas(canvasRef.current, {
         useCORS: true,
-        scale: 2, // slightly lower resolution for payload size
+        scale: 2, 
         backgroundColor: null,
       });
       
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      
-      const payload = {
-        name: userData.name,
-        batch: userData.batch,
-        department: userData.department,
-        eta: userData.eta,
-        image_data_url: dataUrl
-      };
-
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        // using text/plain prevents CORS preflight issues with some basic webhook setups
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-      if (result.result === 'success') {
-        setSubmitStatus('success');
-      } else {
-        setSubmitStatus('error');
-      }
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `McGrande-2026-${userData.name || 'Alumni'}.png`, { type: 'image/png' });
+        
+        // Use Native Web Share API (Works beautifully on mobile iOS/Android for Whatsapp/Insta/FB)
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'McGrande 2026',
+              text: "Let's meet at Mc Grande 2026! 🎓",
+              files: [file]
+            });
+          } catch (shareErr) {
+            console.log("User cancelled share or share failed:", shareErr);
+          }
+        } else {
+          // Fallback if browser doesn't support file sharing (e.g. some desktops)
+          const link = document.createElement('a');
+          link.download = file.name;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          alert("Your image was downloaded! You can now manually share it to WhatsApp, Instagram, or Facebook.");
+        }
+      }, 'image/png');
     } catch (err) {
-      console.error("Failed to submit", err);
-      setSubmitStatus('error');
+      console.error("Failed to share", err);
     } finally {
-      setIsSubmitting(false);
+      setIsGenerating(false);
     }
   };
 
@@ -123,15 +117,23 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
             {/* User Photo (Full Canvas) */}
             <div style={{
               width: '100%',
-              zIndex: 1
+              height: '100%',
+              zIndex: 1,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <img 
                 src={photoUrl} 
                 alt="User" 
                 crossOrigin="anonymous" 
                 style={{
-                  width: '100%',
-                  height: 'auto',
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
                   display: 'block',
                   transform: `scale(${userData.photoScale || 1}) translate(${userData.photoX || 0}%, ${userData.photoY || 0}%)`,
                   transformOrigin: 'center center'
@@ -175,9 +177,12 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               <div style={{ fontSize: '2.8rem', color: '#d4af37', margin: '0 0 2px 0', fontWeight: 'normal', fontStyle: 'italic', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                 {userData.name || 'Your Name'}
               </div>
-              <div style={{ fontSize: '0.9rem', color: '#cbd5e1', margin: '0 0 15px 0', letterSpacing: '2px', textTransform: 'uppercase' }}>
-                {userData.year || 'YYYY - YYYY'}
-              </div>
+              
+              {userData.year && userData.year !== ' - ' && (
+                <div style={{ fontSize: '0.9rem', color: '#cbd5e1', margin: '0 0 15px 0', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                  {userData.year}
+                </div>
+              )}
               
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                 <span style={{ fontSize: '1.2rem', fontWeight: 'normal', color: '#fdfbf7', fontStyle: 'italic', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
@@ -204,12 +209,12 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
       </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
+      <div style={{ display: 'flex', gap: '1rem', width: '100%', maxWidth: '500px', margin: '0 auto' }}>
         <button 
           className="btn" 
           onClick={handleDownload} 
-          disabled={!photoUrl || isGenerating || isSubmitting}
-          style={{ opacity: (!photoUrl || isGenerating || isSubmitting) ? 0.5 : 1, flex: 1, background: 'rgba(255,255,255,0.1)', color: '#fff' }}
+          disabled={!photoUrl || isGenerating}
+          style={{ opacity: (!photoUrl || isGenerating) ? 0.5 : 1, flex: 1, background: 'rgba(255,255,255,0.1)', color: '#fff' }}
         >
           <Download size={20} />
           {isGenerating ? 'Wait...' : 'Download'}
@@ -217,25 +222,14 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
 
         <button 
           className="btn" 
-          onClick={handleSubmit} 
-          disabled={!photoUrl || isSubmitting || isGenerating}
-          style={{ opacity: (!photoUrl || isSubmitting || isGenerating) ? 0.5 : 1, flex: 2 }}
+          onClick={handleShare} 
+          disabled={!photoUrl || isGenerating}
+          style={{ opacity: (!photoUrl || isGenerating) ? 0.5 : 1, flex: 2 }}
         >
           <Send size={20} />
-          {isSubmitting ? 'Submitting...' : 'Register & Submit Photo'}
+          {isGenerating ? 'Wait...' : 'Share to App (WhatsApp, Insta)'}
         </button>
       </div>
-      
-      {submitStatus === 'success' && (
-        <div style={{ color: '#10b981', fontWeight: 'bold', marginTop: '0.5rem', textAlign: 'center' }}>
-          ✅ Successfully submitted to Google Sheets!
-        </div>
-      )}
-      {submitStatus === 'error' && (
-        <div style={{ color: '#ef4444', fontWeight: 'bold', marginTop: '0.5rem', textAlign: 'center' }}>
-          ❌ Failed to submit. Check configuration.
-        </div>
-      )}
     </div>
   );
 };
