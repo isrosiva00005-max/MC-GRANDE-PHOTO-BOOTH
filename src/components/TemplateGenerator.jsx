@@ -131,9 +131,9 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: `${50 + (userData.photoX || 0)}% ${50 + (userData.photoY || 0)}%`,
+                  objectPosition: `${50 + Number(userData.photoX || 0)}% ${50 + Number(userData.photoY || 0)}%`,
                   display: 'block',
-                  transform: `scale(${Math.max(1, userData.photoScale || 1)})`,
+                  transform: `scale(${Math.max(1, Number(userData.photoScale || 1))})`,
                   transformOrigin: 'center center'
                 }}
               />

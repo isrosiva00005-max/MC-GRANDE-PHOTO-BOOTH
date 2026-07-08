@@ -1,13 +1,82 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { templates } from '../templates';
+import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
   const fileInputRef = useRef(null);
 
+  const [isDetecting, setIsDetecting] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     onDataChange({ ...userData, [name]: value });
+  };
+
+  const autoCenterFace = async (imageUrl) => {
+    setIsDetecting(true);
+    try {
+      const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+      );
+      const faceDetector = await FaceDetector.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+          delegate: "CPU"
+        },
+        runningMode: "IMAGE"
+      });
+
+      const img = new Image();
+      img.src = imageUrl;
+      
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+      const detections = faceDetector.detect(img);
+      
+      if (detections.detections.length > 0) {
+        // Get the most prominent face (first one)
+        const face = detections.detections[0].boundingBox;
+        
+        const faceCenterX = face.originX + (face.width / 2);
+        const faceCenterY = face.originY + (face.height / 2);
+        
+        // Calculate percentage offsets from center (50%)
+        const pctX = (faceCenterX / img.width) * 100;
+        const pctY = (faceCenterY / img.height) * 100;
+        
+        // Our TemplateGenerator expects photoX and photoY to be added to 50
+        const photoX = Math.round(pctX - 50);
+        const photoY = Math.round(pctY - 50);
+
+        // User requested zoom to always start at 1
+        const targetScale = 1;
+
+        onDataChange({
+          ...userData,
+          photoX: photoX.toString(),
+          photoY: photoY.toString(),
+          photoScale: targetScale.toString()
+        });
+      } else {
+        console.warn("No faces detected. Applying fallback.");
+        onDataChange({
+          ...userData,
+          photoY: "-25"
+        });
+      }
+    } catch (err) {
+      console.error("Face detection failed, falling back to default.", err);
+      // Fallback heuristic: If it's a portrait photo, faces are usually near the top.
+      onDataChange({
+        ...userData,
+        photoY: "-25"
+      });
+    } finally {
+      setIsDetecting(false);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -15,6 +84,17 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       onPhotoUpload(imageUrl);
+      
+      // Instantly set a better default (top-heavy) while AI loads
+      onDataChange({
+        ...userData,
+        photoX: "0",
+        photoY: "-25",
+        photoScale: "1"
+      });
+      
+      // Auto detect and center face
+      autoCenterFace(imageUrl);
     }
   };
 
@@ -92,12 +172,15 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
         <label>Upload Photo</label>
         <div className="file-upload-wrapper" style={{ position: 'relative' }}>
           <UploadCloud className="upload-icon" size={48} />
-          <p style={{ color: 'var(--text-muted)' }}>Click to browse or drag & drop</p>
+          <p style={{ color: 'var(--text-muted)' }}>
+            {isDetecting ? 'Scanning for faces... 🤖' : 'Click to browse or drag & drop'}
+          </p>
           <input 
             type="file" 
             className="file-upload-input" 
             onChange={handleFileChange}
             accept="image/*"
+            disabled={isDetecting}
             style={{ 
               position: 'absolute', 
               top: 0, 
@@ -105,7 +188,7 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
               width: '100%', 
               height: '100%', 
               opacity: 0, 
-              cursor: 'pointer',
+              cursor: isDetecting ? 'wait' : 'pointer',
               zIndex: 10
             }}
           />
