@@ -124,7 +124,7 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
           <input 
             type="range" 
             name="photoScale" 
-            min="0.5" 
+            min="1" 
             max="3" 
             step="0.1" 
             value={userData.photoScale || 1} 

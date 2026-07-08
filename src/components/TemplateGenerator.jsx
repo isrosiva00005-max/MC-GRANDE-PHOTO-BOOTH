@@ -97,7 +97,7 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
     <div className="canvas-container" style={{ width: '100%' }}>
       <h2 style={{ color: 'var(--text-main)', width: '100%', textAlign: 'center' }}>Your Custom Graphic</h2>
       
-      <div id="canvas-wrapper" style={{ width: '100%', display: 'flex', justifyContent: 'center', height: 500 * previewScale, marginBottom: '1rem' }}>
+      <div id="canvas-wrapper" style={{ width: '100%', maxWidth: '100vw', display: 'flex', justifyContent: 'center', height: 500 * previewScale, marginBottom: '1rem', overflow: 'hidden' }}>
         <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top center', width: '400px', height: '500px' }}>
           <div 
             className="template-preview" 
@@ -122,20 +122,18 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               position: 'absolute',
               top: 0,
               left: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+              overflow: 'hidden'
             }}>
               <img 
                 src={photoUrl} 
                 alt="User" 
-                crossOrigin="anonymous" 
                 style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: `${50 + (userData.photoX || 0)}% ${50 + (userData.photoY || 0)}%`,
                   display: 'block',
-                  transform: `scale(${userData.photoScale || 1}) translate(${userData.photoX || 0}%, ${userData.photoY || 0}%)`,
+                  transform: `scale(${Math.max(1, userData.photoScale || 1)})`,
                   transformOrigin: 'center center'
                 }}
               />
