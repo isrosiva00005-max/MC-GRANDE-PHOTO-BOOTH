@@ -135,23 +135,7 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               />
             </div>
             
-            {/* Year Badge at Top Left */}
-            <div style={{
-              position: 'absolute',
-              top: '6%',
-              left: '5%',
-              zIndex: 3,
-              background: 'rgba(0,0,0,0.6)',
-              padding: '6px 14px',
-              borderRadius: '20px',
-              border: '1px solid rgba(255,255,255,0.3)',
-              backdropFilter: 'blur(4px)',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
-            }}>
-              <span style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '1px' }}>
-                ({userData.year || 'YYYY - YYYY'})
-              </span>
-            </div>
+
             
             {/* Text Details (Overlaid on photo) */}
             <div style={{
@@ -167,36 +151,17 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
               background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 40%, transparent 100%)',
               textAlign: 'center'
             }}>
-              <h1 style={{ fontSize: '2.8rem', color: '#d4af37', margin: '0 0 5px 0', fontWeight: 'normal', fontStyle: 'italic', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
+              <div style={{ fontSize: '2.8rem', color: '#d4af37', margin: '0 0 2px 0', fontWeight: 'normal', fontStyle: 'italic', letterSpacing: '1px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                 {userData.name || 'Your Name'}
-              </h1>
-              <h2 style={{ fontSize: '1rem', color: '#d4af37', margin: '0 0 12px 0', fontWeight: 'normal', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                {userData.department || 'DEPARTMENT'}
-              </h2>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 'normal', color: '#fdfbf7', fontStyle: 'italic', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
-                  "We are here!"
-                </span>
-                {userData.eta && (
-                  <span style={{ background: 'rgba(0,0,0,0.5)', color: '#d4af37', padding: '4px 12px', borderRadius: '4px', fontSize: '0.85rem', border: '1px solid #d4af37', backdropFilter: 'blur(4px)' }}>
-                    ETA: {userData.eta}
-                  </span>
-                )}
+              </div>
+              <div style={{ fontSize: '0.9rem', color: '#cbd5e1', margin: '0 0 15px 0', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                {userData.year || 'YYYY - YYYY'}
               </div>
               
-              {/* Footer */}
-              <div style={{
-                width: '100%',
-                textAlign: 'center',
-                color: '#94a3b8',
-                fontSize: '0.75rem',
-                borderTop: '1px solid rgba(212,175,55,0.3)',
-                paddingTop: '10px',
-                marginTop: '5px'
-              }}>
-                <strong style={{ color: '#e2e8f0', fontWeight: 'normal' }}>Mepco Schlenk Engineering College</strong><br/>
-                <span style={{ color: '#d4af37', fontStyle: 'italic' }}>www.mepcoeng.ac.in</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <span style={{ fontSize: '1.2rem', fontWeight: 'normal', color: '#fdfbf7', fontStyle: 'italic', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+                  Let's meet at Mc Grande 2026
+                </span>
               </div>
             </div>
             

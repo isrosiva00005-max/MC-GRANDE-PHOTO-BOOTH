@@ -18,6 +18,9 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
     }
   };
 
+  const yearStr = userData.year || '';
+  const [fromY, toY] = yearStr.includes(' - ') ? yearStr.split(' - ') : ['', ''];
+
   return (
     <div>
       <h2 style={{ marginBottom: '1.5rem', color: 'var(--text-main)' }}>Your Details</h2>
@@ -36,22 +39,36 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="year">Batch Year (From - To)</label>
-        <select 
-          id="year" 
-          name="year" 
-          className="form-control" 
-          value={userData.year}
-          onChange={handleChange}
-          style={{ appearance: 'auto', paddingRight: '2rem' }}
-        >
-          <option value="" disabled>Select Batch Year</option>
-          {Array.from({ length: 2027 - 1970 }, (_, i) => 2026 - i).map(year => (
-            <option key={year} value={`${year} - ${year + 4}`}>
-              {year} - {year + 4}
-            </option>
-          ))}
-        </select>
+        <label>Batch Year (From - To)</label>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <select 
+            className="form-control" 
+            value={fromY}
+            onChange={(e) => {
+              const newToY = toY || (parseInt(e.target.value) + 4).toString();
+              onDataChange({ ...userData, year: `${e.target.value} - ${newToY}` });
+            }}
+          >
+            <option value="" disabled>From Year</option>
+            {Array.from({ length: 2027 - 1970 }, (_, i) => 2026 - i).map(year => (
+              <option key={`from-${year}`} value={year}>{year}</option>
+            ))}
+          </select>
+          <span style={{ color: 'var(--text-muted)', fontWeight: 'bold' }}>-</span>
+          <select 
+            className="form-control" 
+            value={toY}
+            onChange={(e) => {
+              const newFromY = fromY || (parseInt(e.target.value) - 4).toString();
+              onDataChange({ ...userData, year: `${newFromY} - ${e.target.value}` });
+            }}
+          >
+            <option value="" disabled>To Year</option>
+            {Array.from({ length: 2031 - 1974 }, (_, i) => 2030 - i).map(year => (
+              <option key={`to-${year}`} value={year}>{year}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="form-group">
@@ -67,21 +84,7 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="eta">Expected Time of Arrival (ETA)</label>
-        <select 
-          id="eta" 
-          name="eta" 
-          className="form-control" 
-          value={userData.eta}
-          onChange={handleChange}
-          style={{ appearance: 'auto', paddingRight: '2rem' }}
-        >
-          <option value="" disabled>Select Arrival Time</option>
-          <option value="17 July 6 PM">17 July 6 PM</option>
-          <option value="18th July 10 AM">18th July 10 AM</option>
-        </select>
-      </div>
+
 
 
 
@@ -96,7 +99,7 @@ const PhotoUploadForm = ({ userData, onDataChange, onPhotoUpload }) => {
             ref={fileInputRef}
             onChange={handleFileChange}
             accept="image/*"
-            title=""
+            style={{ display: 'none' }}
           />
         </div>
       </div>
