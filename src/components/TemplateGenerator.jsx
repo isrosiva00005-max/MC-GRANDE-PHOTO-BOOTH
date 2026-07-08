@@ -7,6 +7,24 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [previewScale, setPreviewScale] = useState(1);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      const wrapper = document.getElementById('canvas-wrapper');
+      if (wrapper) {
+        const width = wrapper.offsetWidth;
+        if (width < 400) {
+          setPreviewScale(width / 400);
+        } else {
+          setPreviewScale(1);
+        }
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // REPLACE THIS URL with your deployed Google Apps Script Web App URL
   const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxAvJi5784bMZU1ue-l2l1Acvd6j_9Wirb2EN4EWdHY0lKIhB-Zy8pzWwGMmq7rYJJTiQ/exec";
@@ -82,20 +100,23 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
   };
 
   return (
-    <div className="canvas-container">
-      <h2 style={{ color: 'var(--text-main)', width: '100%' }}>Your Custom Graphic</h2>
+    <div className="canvas-container" style={{ width: '100%' }}>
+      <h2 style={{ color: 'var(--text-main)', width: '100%', textAlign: 'center' }}>Your Custom Graphic</h2>
       
-      <div 
-        className="template-preview" 
-        ref={canvasRef}
-        style={{
-          width: '100%', 
-          maxWidth: '500px', 
-          margin: '0 auto',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
+      <div id="canvas-wrapper" style={{ width: '100%', display: 'flex', justifyContent: 'center', height: 500 * previewScale, marginBottom: '1rem' }}>
+        <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top center', width: '400px', height: '500px' }}>
+          <div 
+            className="template-preview" 
+            ref={canvasRef}
+            style={{
+              width: '400px', 
+              height: '500px', 
+              position: 'relative',
+              overflow: 'hidden',
+              backgroundColor: '#000',
+              borderRadius: '16px'
+            }}
+          >
         {photoUrl ? (
           <div style={{ position: 'relative', width: '100%', height: '100%', fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}>
             
@@ -179,6 +200,8 @@ const TemplateGenerator = ({ userData, photoUrl }) => {
             Upload a photo to see it perfectly framed.
           </div>
         )}
+      </div>
+      </div>
       </div>
 
       <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
